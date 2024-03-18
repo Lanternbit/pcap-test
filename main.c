@@ -49,7 +49,7 @@ void print_ip_and_port(bool l, struct libnet_ipv4_hdr *ip_hdr, struct libnet_tcp
         }
     }
 
-    printf(":%d", l == 0 ? htons(tcp_hdr->th_sport):htons(tcp_hdr->th_dport));
+    printf(":%d", l == 0 ? ntohs(tcp_hdr->th_sport):ntohs(tcp_hdr->th_dport));
     printf("%s", l == 0 ? " -> ":"\n");
 }
 
@@ -87,6 +87,7 @@ int main(int argc, char* argv[]) {
 
         struct libnet_ipv4_hdr *ip_hdr = (struct libnet_ipv4_hdr*)(packet + sizeof(*eth_hdr));
         if (ip_hdr->ip_p != IPPROTO_TCP) continue;
+
         struct libnet_tcp_hdr *tcp_hdr = (struct libnet_tcp_hdr*)(packet + sizeof(*eth_hdr) + sizeof(*ip_hdr));
 
         print_mac_addr(0, eth_hdr);
