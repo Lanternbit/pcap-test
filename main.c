@@ -53,8 +53,10 @@ void print_ip_and_port(bool l, struct libnet_ipv4_hdr *ip_hdr, struct libnet_tcp
     printf("%s", l == 0 ? " -> ":"\n");
 }
 
-void print_payload(const u_char *payload) {
-    for (int i = 0; i < 10; i++) {
+void print_payload(const u_char *payload, int length) {
+    if (length > 10) length = 10;
+    
+    for (int i = 0; i < length; i++) {
         printf("%02x", payload[i]);
 
         if (i < 9) printf("|");
@@ -98,7 +100,7 @@ int main(int argc, char* argv[]) {
         int hdr_size = sizeof(*eth_hdr) + ip_hdr->ip_hl * 4 + tcp_hdr->th_off * 4;
         const u_char *payload = packet + hdr_size;
 
-        if ((int)header->caplen >= 64 && (int)header->caplen != hdr_size) print_payload(payload);
+        if ((int)header->caplen >= 64 && (int)header->caplen != hdr_size) print_payload(payload, (int)header->caplen - hdr_size);
         else printf("-");
 
         printf("\n==================================================================================\n");
